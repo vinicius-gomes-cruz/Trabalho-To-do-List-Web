@@ -36,7 +36,7 @@ main {
 }
 
 #list {
-    height: 138px;
+    height: 30vh;
     overflow-y: auto;
 }
 
