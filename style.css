@@ -1,0 +1,50 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    background: linear-gradient(270deg, rgb(6, 190, 89), rgb(4, 92, 23));
+    border-style: solid;
+    border-width: 5px;
+}
+
+#img-if {
+    height: calc(25vh - 40px);
+}
+
+main {
+    background-color: rgb(8, 134, 25);
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#container {
+    border-style: solid;
+    border-radius: 10px;
+    background:rgba(39, 39, 39, 0.767);
+    width: 60vw !important;
+}
+
+#list {
+    height: 138px;
+    overflow-y: auto;
+}
+
+footer {
+    background-color: rgb(3, 6, 37);
+}
+
+#github {
+    text-decoration: none;
+    color: white;
+}
