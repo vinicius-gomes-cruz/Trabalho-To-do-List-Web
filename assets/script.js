@@ -136,14 +136,14 @@ function exibirTarefas(lista) {
 
             const li_elem = `<li class="list-group-item bg-transparent border-0 d-flex align-items-center justify-content-between">
                         <h3 class="text-light fs-4">${icon} ${tarefa.nome} - ${tarefa.prioridade}</h3>
-                        <div class="d-flex align-items-center gap-2">
-                            <button class="btn btn-warning" type="button" onclick="carregarDadosProInput(${index})"><i data-feather="edit" class="mb-1"></i>
+                        <div class="d-flex align-items-center gap-2 p-2">
+                            <button class="btn btn-warning btn-sm" type="button" onclick="carregarDadosProInput(${index})"><i data-feather="edit" class="mb-1"></i>
                                 Editar
                             </button>
-                            <button class="btn btn-danger" type="button" onclick="excluirTarefa(${index})"><i data-feather="trash-2" class="mb-1"></i>
+                            <button class="btn btn-danger btn-sm" type="button" onclick="excluirTarefa(${index})"><i data-feather="trash-2" class="mb-1"></i>
                                 Cancelar
                             </button>
-                            <button class="btn btn-success" type="button" onclick="concluirTarefa(${index})"><i data-feather="check-square" class="mb-1"></i>
+                            <button class="btn btn-success btn-sm" type="button" onclick="concluirTarefa(${index})"><i data-feather="check-square" class="mb-1"></i>
                                 ${tarefa.concluida ? 'Desmarcar' : 'Completar'}
                             </button>
                         </div>
