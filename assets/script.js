@@ -6,10 +6,9 @@ const div_lista = document.getElementById("list");
 const btn_adicionar = document.getElementById("btn-adicionar");
 const input_pesquisar = document.getElementById("pesquisar");
 
-// criar eventos
-btn_adicionar.addEventListener("click", adicionar_tarefa);
-
-input_pesquisar.addEventListener("input", pesquisar_tarefas);
+// adicionar eventos aos elementos
+btn_adicionar.addEventListener("click", adicionarTarefa);
+input_pesquisar.addEventListener("input", pesquisarTarefas);
 
 // alterar o prioridade e exibir
 items_dropdown.forEach(item => {
@@ -18,98 +17,134 @@ items_dropdown.forEach(item => {
     });
 });
 
-// variaveis
-let id_tarefa = -1;
-
 // buscar lista ou inicializar uma nova
 let lista_tarefas = JSON.parse(localStorage.getItem("lista_tarefas")) || [];
 
 // exibir lista
-exibir_tarefas(lista_tarefas);
+exibirTarefas(lista_tarefas);
+
+// criar modal de alerta
+function criarModalAlert(mensagem) {
+    const modalId = "modal-alert";
+
+    // Verifica se um modal com o mesmo ID já existe no DOM
+    const existingModal = document.getElementById(modalId);
+    if (existingModal) existingModal.remove(); // Remove para evitar duplicação
+
+    const modal = document.createElement("div");
+    modal.id = modalId; // Define o ID do modal
+    modal.classList.add("modal", "fade");
+    modal.setAttribute("tabindex", "-1");
+    modal.setAttribute("aria-labelledby", "exampleModalLabel");
+    modal.setAttribute("aria-hidden", "true");
+
+    modal.innerHTML = `
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-center">Atenção!</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    ${mensagem}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    // Inicializa o modal pelo ID
+    const bootstrapModal = new bootstrap.Modal(document.getElementById(modalId));
+    bootstrapModal.show();
+}
+
 
 // adicionar uma nova tarefa
-function adicionar_tarefa(e) {
+function adicionarTarefa(e) {
     e.preventDefault();
 
     const nome = input_nome.value;
     const prioridade = btn_prioridade.textContent.trim();
-    const tarefa = { nome, prioridade};
+    const tarefa = { nome, prioridade };
 
     // verifica se o usuário preencheu o nome
     if (!nome) {
-        alert("Preencha o nome!"); // modal
+        criarModalAlert("Preencha o nome!");
         return;
     }
 
     // verifica se já existe
     if (lista_tarefas.some(t => t.nome.toLowerCase() == nome.toLowerCase())) {
-        alert("Tarefa já existe!"); // modal
+        criarModalAlert("Tarefa já existe!");
         return;
     }
 
     // adiciona a tarefa na lista e salva no local storage
     lista_tarefas.push(tarefa);
-    salvar_lista()
+    salvarLista();
     input_nome.value = "";
     btn_prioridade.textContent = "Alta";
-    exibir_tarefas(lista_tarefas);
+    exibirTarefas(lista_tarefas);
 }
 
 // salvar lista no local storage
-function salvar_lista() {
+function salvarLista() {
     localStorage.setItem("lista_tarefas", JSON.stringify(lista_tarefas));
 }
 
 // editar tarefa
-function atualizar_tarefa(id) {
+function atualizarTarefa(id) {
     const nome = document.querySelector("#nome-edit").value;
     if (nome) {
         const prioridade = document.querySelector("#prioridade-edit").textContent;
         lista_tarefas[id] = { nome, prioridade };
-        salvar_lista();
-        exibir_tarefas(lista_tarefas);
+        salvarLista();
+        exibirTarefas(lista_tarefas);
     } else {
-        alert("Preencha o nome!"); // modal
+        criarModalAlert("Preencha o nome!");
     }
 }
 
-// excluir uma tarefa
-function excluir_tarefa(id) {
+// concluir/excluir uma tarefa
+function excluirTarefa(id) {
     lista_tarefas.splice(id, 1);
-    salvar_lista()
-    exibir_tarefas(lista_tarefas);
-}
-
-// concluir tarefa
-function concluir_tarefa(id) {
-    lista_tarefas.splice(id, 1);
-    salvar_lista()
-    exibir_tarefas(lista_tarefas);
+    salvarLista();
+    exibirTarefas(lista_tarefas);
 }
 
 // pesquisar tarefa
-function pesquisar_tarefas(e) {
+function pesquisarTarefas(e) {
     const nome = e.target.value;
     const tarefas_filtradas = lista_tarefas.filter(t => t.nome.toLowerCase().includes(nome.toLowerCase()));
-    salvar_lista()
-    exibir_tarefas(tarefas_filtradas);
+    salvarLista();
+    exibirTarefas(tarefas_filtradas);
 }
 
 // exibir lista de tarefas
-function exibir_tarefas(lista) {
+function exibirTarefas(lista) {
     div_lista.innerHTML = "";
 
     if (lista.length == 0) {
         div_lista.innerHTML = "<h3 class='text-center text-light'>Nenhuma tarefa cadastrada.</h3>";
     } else {
-
         lista.forEach((tarefa, index) => {
-            console.log(tarefa.nome);
             const li_elem = `<li class="list-group-item bg-transparent border-0 d-flex align-items-center justify-content-between">
                             <h3 class="text-light fs-4">${tarefa.nome} - ${tarefa.prioridade}</h3>
                             <div class="d-flex align-items-center gap-2 p-2">
                                 <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#edit-${index}">
                                     <i data-feather="edit" class="mb-1"></i> Editar
+                                </button>
+
+                                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#excluir-${index}">
+                                    <i data-feather="x-circle" class="mb-1"></i> Excluir
+                                </button>
+
+                                <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#concluir-${index}">
+                                    <i data-feather="check-square" class="mb-1"></i> Concluir
                                 </button>
             
                                 <div class="modal fade" id="edit-${index}" tabindex="-1" aria-labelledby="exampleModalLabel"
@@ -118,8 +153,8 @@ function exibir_tarefas(lista) {
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title" id="exampleModalLabel">Editar Tarefa</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                                </button>
                                             </div>
                                             <div class="modal-body">
                                                 <form class="d-flex">
@@ -132,7 +167,7 @@ function exibir_tarefas(lista) {
                                                         </button>
                                                         <ul class="dropdown-menu">
                                                             <li><a class="dropdown-item" href="#">Alta</a></li>
-                                                            <li><a class="dropdown-item" href="#">Media</a></li>
+                                                            <li><a class="dropdown-item" href="#">Média</a></li>
                                                             <li><a class="dropdown-item" href="#">Baixa</a></li>
                                                         </ul>
                                                     </div>
@@ -140,9 +175,48 @@ function exibir_tarefas(lista) {
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="atualizar_tarefa(${index})">Salvar</button>
+                                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="atualizarTarefa(${index})">Salvar</button>
                                             </div>
-                                            
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="modal fade" id="excluir-${index}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                                    aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Excluir Tarefa</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Tem certeza que deseja excluir <strong>${tarefa.nome}</strong>?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="excluirTarefa(${index})">Salvar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="modal fade" id="concluir-${index}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                                    aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Excluir Tarefa</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Concluir <strong>${tarefa.nome}</strong>?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                                                <button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="excluirTarefa(${index})">Concluir</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
