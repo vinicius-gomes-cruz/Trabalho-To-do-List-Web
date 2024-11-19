@@ -33,20 +33,23 @@ function criarModal(id, tipo, titulo, conteudo, botoes) {
     if (existingModal) existingModal.remove(); // Remove para evitar duplicação
 
     const modal = document.createElement("div");
+    modal.className = "modal fade";
+    modal.id = modalId;
+    modal.tabIndex = "-1";
+    modal.setAttribute("aria-labelledby", "exampleModalLabel");
+    modal.setAttribute("aria-hidden", "true");
     modal.innerHTML = `
-        <div class="modal fade" id="${modalId}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden=true>
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title text-center">${titulo}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        ${conteudo}
-                    </div>
-                    <div class="modal-footer">
-                        ${botoes}
-                    </div>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-center">${titulo}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    ${conteudo}
+                </div>
+                <div class="modal-footer">
+                    ${botoes}
                 </div>
             </div>
         </div>
@@ -54,13 +57,14 @@ function criarModal(id, tipo, titulo, conteudo, botoes) {
 
     document.body.appendChild(modal);
 
-    // Inicializa o modal
-    if (tipo == "alert") {
-        const bootstrapModal = new bootstrap.Modal(document.getElementById(modalId));
-        bootstrapModal.show();
-    }
+    return modal;
 }
 
+// abrir modal
+function abrirModal(modal) {
+    const bootstrapModal = new bootstrap.Modal(modal);
+    bootstrapModal.show();
+}
 
 // adicionar uma nova tarefa
 function adicionarTarefa(e) {
@@ -72,25 +76,27 @@ function adicionarTarefa(e) {
 
     // verifica se o usuário preencheu o nome
     if (!nome) {
-        criarModal(
-            -1,
+        const modal = criarModal(
+            0,
             "alert",
             "Atenção!",
             "Preencha o nome!",
             '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>'
         );
+        abrirModal(modal);
         return;
     }
 
     // verifica se já existe
     if (lista_tarefas.some(t => t.nome.toLowerCase() == nome.toLowerCase())) {
-        criarModal(
-            -1,
+        const modal = criarModal(
+            0,
             "alert",
             "Atenção!",
             "Tarefa já existe!",
             '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>'
         );
+        abrirModal(modal);
         return;
     }
 
@@ -116,13 +122,14 @@ function atualizarTarefa(id) {
         salvarLista();
         exibirTarefas(lista_tarefas);
     } else {
-        criarModal(
-            -1,
+        const modal = criarModal(
+            0,
             "alert",
             "Atenção!",
             "Não pode atualizar para um nome vazio!",
             '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>'
         );
+        abrirModal(modal);
     }
 }
 
