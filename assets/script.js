@@ -23,33 +23,30 @@ let lista_tarefas = JSON.parse(localStorage.getItem("lista_tarefas")) || [];
 // exibir lista
 exibirTarefas(lista_tarefas);
 
-// criar modal de alerta
-function criarModalAlert(mensagem) {
-    const modalId = "modal-alert";
+// criar modal
+function criarModal(id, tipo, titulo, conteudo, botoes) {
+
+    const modalId = `${tipo}-${id}`;
 
     // Verifica se um modal com o mesmo ID já existe no DOM
     const existingModal = document.getElementById(modalId);
     if (existingModal) existingModal.remove(); // Remove para evitar duplicação
 
     const modal = document.createElement("div");
-    modal.id = modalId; // Define o ID do modal
-    modal.classList.add("modal", "fade");
-    modal.setAttribute("tabindex", "-1");
-    modal.setAttribute("aria-labelledby", "exampleModalLabel");
-    modal.setAttribute("aria-hidden", "true");
-
     modal.innerHTML = `
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-center">Atenção!</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    ${mensagem}
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        <div class="modal fade" id="${modalId}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden=true>
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-center">${titulo}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        ${conteudo}
+                    </div>
+                    <div class="modal-footer">
+                        ${botoes}
+                    </div>
                 </div>
             </div>
         </div>
@@ -57,9 +54,11 @@ function criarModalAlert(mensagem) {
 
     document.body.appendChild(modal);
 
-    // Inicializa o modal pelo ID
-    const bootstrapModal = new bootstrap.Modal(document.getElementById(modalId));
-    bootstrapModal.show();
+    // Inicializa o modal
+    if (tipo == "alert") {
+        const bootstrapModal = new bootstrap.Modal(document.getElementById(modalId));
+        bootstrapModal.show();
+    }
 }
 
 
@@ -73,13 +72,25 @@ function adicionarTarefa(e) {
 
     // verifica se o usuário preencheu o nome
     if (!nome) {
-        criarModalAlert("Preencha o nome!");
+        criarModal(
+            -1,
+            "alert",
+            "Atenção!",
+            "Preencha o nome!",
+            '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>'
+        );
         return;
     }
 
     // verifica se já existe
     if (lista_tarefas.some(t => t.nome.toLowerCase() == nome.toLowerCase())) {
-        criarModalAlert("Tarefa já existe!");
+        criarModal(
+            -1,
+            "alert",
+            "Atenção!",
+            "Tarefa já existe!",
+            '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>'
+        );
         return;
     }
 
@@ -98,14 +109,20 @@ function salvarLista() {
 
 // editar tarefa
 function atualizarTarefa(id) {
-    const nome = document.querySelector("#nome-edit").value;
+    const nome = document.querySelector(`#nome-edit-${id}`).value;
     if (nome) {
-        const prioridade = document.querySelector("#prioridade-edit").textContent;
+        const prioridade = document.querySelector(`#prioridade-edit-${id}`).textContent;
         lista_tarefas[id] = { nome, prioridade };
         salvarLista();
         exibirTarefas(lista_tarefas);
     } else {
-        criarModalAlert("Preencha o nome!");
+        criarModal(
+            -1,
+            "alert",
+            "Atenção!",
+            "Não pode atualizar para um nome vazio!",
+            '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>'
+        );
     }
 }
 
@@ -159,9 +176,9 @@ function exibirTarefas(lista) {
                                             <div class="modal-body">
                                                 <form class="d-flex">
                                                     <input type="text" class="form-control" placeholder="Nome da Tarefa" aria-describedby="basic-addon1"
-                                                    value="${tarefa.nome}">
+                                                    value="${tarefa.nome}" id="nome-edit-${index}">
                                                     <div class="dropdown ms-4">
-                                                        <button id="prioridade-edit" class="btn btn-success dropdown-toggle" type="button"
+                                                        <button id="prioridade-edit-${index}" class="btn btn-success dropdown-toggle" type="button"
                                                             data-bs-toggle="dropdown" aria-expanded="false">
                                                             ${tarefa.prioridade}
                                                         </button>
