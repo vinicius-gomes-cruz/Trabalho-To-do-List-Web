@@ -114,7 +114,7 @@ function salvarLista() {
 }
 
 // editar tarefa
-function atualizarTarefa(id) {
+function editarTarefa(id) {
     const nome = document.querySelector(`#nome-edit-${id}`).value;
     if (nome) {
         const prioridade = document.querySelector(`#prioridade-edit-${id}`).textContent;
@@ -134,7 +134,7 @@ function atualizarTarefa(id) {
 }
 
 // concluir/excluir uma tarefa
-function excluirTarefa(id) {
+function retirarTarefaDaLista(id) {
     lista_tarefas.splice(id, 1);
     salvarLista();
     exibirTarefas(lista_tarefas);
@@ -156,98 +156,69 @@ function exibirTarefas(lista) {
         div_lista.innerHTML = "<h3 class='text-center text-light'>Nenhuma tarefa cadastrada.</h3>";
     } else {
         lista.forEach((tarefa, index) => {
-            const li_elem = `<li class="list-group-item bg-transparent border-0 d-flex align-items-center justify-content-between">
-                            <h3 class="text-light fs-4">${tarefa.nome} - ${tarefa.prioridade}</h3>
-                            <div class="d-flex align-items-center gap-2 p-2">
-                                <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#edit-${index}">
-                                    <i data-feather="edit" class="mb-1"></i> Editar
-                                </button>
+            const modal_editar = criarModal(
+                index,
+                "edit",
+                "Editar Tarefa",
+                `<form class="d-flex">
+                    <input type="text" class="form-control" placeholder="Nome da Tarefa" aria-describedby="basic-addon1" value="${tarefa.nome}" id="nome-edit-${index}">
+                    <div class="dropdown ms-4">
+                        <button id="prioridade-edit-${index}" class="btn btn-success dropdown-toggle" type="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            ${tarefa.prioridade}
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Alta</a></li>
+                            <li><a class="dropdown-item" href="#">Média</a></li>
+                            <li><a class="dropdown-item" href="#">Baixa</a></li>
+                        </ul>
+                    </div>
+                </form>`,
+                `<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="editarTarefa(${index})">Salvar</button>`
+            );
 
-                                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#excluir-${index}">
-                                    <i data-feather="x-circle" class="mb-1"></i> Excluir
-                                </button>
+            const modal_excluir = criarModal(
+                index,
+                "excluir",
+                "Excluir Tarefa",
+                `Tem certeza que deseja excluir <strong>${tarefa.nome}</strong>?`,
+                `<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="retirarTarefaDaLista(${index})">Salvar</button>`
+            );
 
-                                <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#concluir-${index}">
-                                    <i data-feather="check-square" class="mb-1"></i> Concluir
-                                </button>
-            
-                                <div class="modal fade" id="edit-${index}" tabindex="-1" aria-labelledby="exampleModalLabel"
-                                    aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Editar Tarefa</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <form class="d-flex">
-                                                    <input type="text" class="form-control" placeholder="Nome da Tarefa" aria-describedby="basic-addon1"
-                                                    value="${tarefa.nome}" id="nome-edit-${index}">
-                                                    <div class="dropdown ms-4">
-                                                        <button id="prioridade-edit-${index}" class="btn btn-success dropdown-toggle" type="button"
-                                                            data-bs-toggle="dropdown" aria-expanded="false">
-                                                            ${tarefa.prioridade}
-                                                        </button>
-                                                        <ul class="dropdown-menu">
-                                                            <li><a class="dropdown-item" href="#">Alta</a></li>
-                                                            <li><a class="dropdown-item" href="#">Média</a></li>
-                                                            <li><a class="dropdown-item" href="#">Baixa</a></li>
-                                                        </ul>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="atualizarTarefa(${index})">Salvar</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+            const modal_concluir = criarModal(
+                index,
+                "concluir",
+                "Concluir Tarefa",
+                `Tem certeza que deseja concluir <strong>${tarefa.nome}</strong>?`,
+                `<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="retirarTarefaDaLista(${index})">Salvar</button>`
+            );
 
+            const li_elem = document.createElement('li');
+            li_elem.className = 'list-group-item bg-transparent border-0 d-flex align-items-center justify-content-between';
+            li_elem.innerHTML = `
+                    <h3 class="text-light fs-4">${tarefa.nome} - ${tarefa.prioridade}</h3>
+                    <div class="d-flex align-items-center gap-2 p-2">
+                
+                    <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#edit-${index}">
+                        <i data-feather="edit" class="mb-1"></i> Editar
+                    </button>
 
-                                <div class="modal fade" id="excluir-${index}" tabindex="-1" aria-labelledby="exampleModalLabel"
-                                    aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Excluir Tarefa</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                Tem certeza que deseja excluir <strong>${tarefa.nome}</strong>?
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="excluirTarefa(${index})">Salvar</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                    <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#excluir-${index}">
+                        <i data-feather="x-circle" class="mb-1"></i> Excluir
+                    </button>
 
+                    <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#concluir-${index}">
+                        <i data-feather="check-square" class="mb-1"></i> Concluir
+                    </button>
+            `;
 
-                                <div class="modal fade" id="concluir-${index}" tabindex="-1" aria-labelledby="exampleModalLabel"
-                                    aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Excluir Tarefa</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                Concluir <strong>${tarefa.nome}</strong>?
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                                                <button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="excluirTarefa(${index})">Concluir</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>`;
-
-            div_lista.innerHTML += li_elem;
+            li_elem.appendChild(modal_editar);
+            li_elem.appendChild(modal_excluir);
+            li_elem.appendChild(modal_concluir);
+            div_lista.appendChild(li_elem);
         });
 
         feather.replace();
