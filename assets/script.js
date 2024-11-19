@@ -184,7 +184,7 @@ function exibirTarefas(lista) {
                 "Excluir Tarefa",
                 `Tem certeza que deseja excluir <strong>${tarefa.nome}</strong>?`,
                 `<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="retirarTarefaDaLista(${index})">Salvar</button>`
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" onclick="retirarTarefaDaLista(${index})">Excluir</button>`
             );
 
             const modal_concluir = criarModal(
@@ -193,7 +193,7 @@ function exibirTarefas(lista) {
                 "Concluir Tarefa",
                 `Tem certeza que deseja concluir <strong>${tarefa.nome}</strong>?`,
                 `<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="retirarTarefaDaLista(${index})">Salvar</button>`
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="retirarTarefaDaLista(${index})">Concluir</button>`
             );
 
             const li_elem = document.createElement('li');
