@@ -4,37 +4,12 @@ const btn_prioridade = document.getElementById("alterar-prioridade");
 const items_dropdown = document.querySelectorAll(".dropdown-item");
 const div_lista = document.getElementById("list");
 const btn_adicionar = document.getElementById("btn-adicionar");
-const btn_cancelar_edicao = document.getElementById("btn-cancelar-edicao");
-const btn_atualizar = document.getElementById("btn-atualizar");
 const input_pesquisar = document.getElementById("pesquisar");
 
 // criar eventos
-btn_adicionar.addEventListener("click", adicionarTarefa);
-btn_atualizar.addEventListener("click", () => {
-    if (id_tarefa === -1) {
-        alert("Selecione uma tarefa primeiro.");
-        return;
-    }
+btn_adicionar.addEventListener("click", adicionar_tarefa);
 
-    const nome = input_nome.value;
-    const prioridade = btn_prioridade.textContent;
-    lista_tarefas[id_tarefa].nome = nome;
-    lista_tarefas[id_tarefa].prioridade = prioridade;
-    id_tarefa = -1;
-    input_nome.value = "";
-    btn_adicionar.style.display = "";
-    btn_cancelar_edicao.style.display = "none";
-    exibirTarefas(lista_tarefas);
-});
-btn_cancelar_edicao.style.display = "none";
-btn_cancelar_edicao.addEventListener("click", () => {
-    id_tarefa = -1;
-    input_nome.value = "";
-    btn_prioridade.textContent = "Prioridade";
-    btn_adicionar.style.display = "";
-    btn_cancelar_edicao.style.display = "none";
-});
-input_pesquisar.addEventListener("input", pesquisarTarefas);
+input_pesquisar.addEventListener("input", pesquisar_tarefas);
 
 // alterar o prioridade e exibir
 items_dropdown.forEach(item => {
@@ -50,78 +25,78 @@ let id_tarefa = -1;
 let lista_tarefas = JSON.parse(localStorage.getItem("lista_tarefas")) || [];
 
 // exibir lista
-exibirTarefas(lista_tarefas);
+exibir_tarefas(lista_tarefas);
 
 // adicionar uma nova tarefa
-function adicionarTarefa(e) {
+function adicionar_tarefa(e) {
     e.preventDefault();
 
     const nome = input_nome.value;
     const prioridade = btn_prioridade.textContent.trim();
-    const tarefa = { nome, prioridade, concluida: false };
+    const tarefa = { nome, prioridade};
 
     // verifica se o usuário preencheu o nome
     if (!nome) {
-        alert("Preencha o nome!");
-        return;
-    }
-
-    // verifica se o usuário preencheu a prioridade
-    if (prioridade == "Prioridade") {
-        alert("Selecione um prioridade!");
+        alert("Preencha o nome!"); // modal
         return;
     }
 
     // verifica se já existe
     if (lista_tarefas.some(t => t.nome.toLowerCase() == nome.toLowerCase())) {
-        alert("Tarefa já existe!");
+        alert("Tarefa já existe!"); // modal
         return;
     }
 
     // adiciona a tarefa na lista e salva no local storage
     lista_tarefas.push(tarefa);
-    localStorage.setItem("lista_tarefas", JSON.stringify(lista_tarefas));
+    salvar_lista()
     input_nome.value = "";
-    btn_prioridade.textContent = "Prioridade";
-    exibirTarefas(lista_tarefas);
+    btn_prioridade.textContent = "Alta";
+    exibir_tarefas(lista_tarefas);
+}
+
+// salvar lista no local storage
+function salvar_lista() {
+    localStorage.setItem("lista_tarefas", JSON.stringify(lista_tarefas));
 }
 
 // editar tarefa
-function carregarDadosProInput(id) {
-    btn_adicionar.style.display = "none";
-    btn_cancelar_edicao.style.display = "";
-
-    let tarefa = lista_tarefas[id];
-    id_tarefa = id;
-    input_nome.value = tarefa.nome;
-    btn_prioridade.textContent = tarefa.prioridade;
+function atualizar_tarefa(id) {
+    const nome = document.querySelector("#nome-edit").value;
+    if (nome) {
+        const prioridade = document.querySelector("#prioridade-edit").textContent;
+        lista_tarefas[id] = { nome, prioridade };
+        salvar_lista();
+        exibir_tarefas(lista_tarefas);
+    } else {
+        alert("Preencha o nome!"); // modal
+    }
 }
 
 // excluir uma tarefa
-function excluirTarefa(id) {
-    if (confirm(`Tem certeza que deseja excluir tarefa "${lista_tarefas[id].nome}"`))
-        lista_tarefas.splice(id, 1);
-    localStorage.setItem("lista_tarefas", JSON.stringify(lista_tarefas));
-    exibirTarefas(lista_tarefas);
+function excluir_tarefa(id) {
+    lista_tarefas.splice(id, 1);
+    salvar_lista()
+    exibir_tarefas(lista_tarefas);
 }
 
 // concluir tarefa
-function concluirTarefa(id) {
-    lista_tarefas[id].concluida = !lista_tarefas[id].concluida;
-    localStorage.setItem("lista_tarefas", JSON.stringify(lista_tarefas));
-    exibirTarefas(lista_tarefas);
+function concluir_tarefa(id) {
+    lista_tarefas.splice(id, 1);
+    salvar_lista()
+    exibir_tarefas(lista_tarefas);
 }
 
 // pesquisar tarefa
-function pesquisarTarefas(e) {
+function pesquisar_tarefas(e) {
     const nome = e.target.value;
     const tarefas_filtradas = lista_tarefas.filter(t => t.nome.toLowerCase().includes(nome.toLowerCase()));
-    localStorage.setItem("lista_tarefas", JSON.stringify(lista_tarefas));
-    exibirTarefas(tarefas_filtradas);
+    salvar_lista()
+    exibir_tarefas(tarefas_filtradas);
 }
 
 // exibir lista de tarefas
-function exibirTarefas(lista) {
+function exibir_tarefas(lista) {
     div_lista.innerHTML = "";
 
     if (lista.length == 0) {
@@ -129,25 +104,50 @@ function exibirTarefas(lista) {
     } else {
 
         lista.forEach((tarefa, index) => {
-            // ícone com base no prioridade da tarefa
-            const icon = tarefa.concluida
-                ? '<i data-feather="check-square" class="me-2 text-success"></i>'
-                : '<i data-feather="square" class="me-2 text-light"></i>';
-
+            console.log(tarefa.nome);
             const li_elem = `<li class="list-group-item bg-transparent border-0 d-flex align-items-center justify-content-between">
-                        <h3 class="text-light fs-4">${icon} ${tarefa.nome} - ${tarefa.prioridade}</h3>
-                        <div class="d-flex align-items-center gap-2 p-2">
-                            <button class="btn btn-warning btn-sm" type="button" onclick="carregarDadosProInput(${index})"><i data-feather="edit" class="mb-1"></i>
-                                Editar
-                            </button>
-                            <button class="btn btn-danger btn-sm" type="button" onclick="excluirTarefa(${index})"><i data-feather="trash-2" class="mb-1"></i>
-                                Cancelar
-                            </button>
-                            <button class="btn btn-success btn-sm" type="button" onclick="concluirTarefa(${index})"><i data-feather="check-square" class="mb-1"></i>
-                                ${tarefa.concluida ? 'Desmarcar' : 'Completar'}
-                            </button>
-                        </div>
-                    </li>`;
+                            <h3 class="text-light fs-4">${tarefa.nome} - ${tarefa.prioridade}</h3>
+                            <div class="d-flex align-items-center gap-2 p-2">
+                                <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#edit-${index}">
+                                    <i data-feather="edit" class="mb-1"></i> Editar
+                                </button>
+            
+                                <div class="modal fade" id="edit-${index}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                                    aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Editar Tarefa</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form class="d-flex">
+                                                    <input type="text" class="form-control" placeholder="Nome da Tarefa" aria-describedby="basic-addon1"
+                                                    value="${tarefa.nome}">
+                                                    <div class="dropdown ms-4">
+                                                        <button id="prioridade-edit" class="btn btn-success dropdown-toggle" type="button"
+                                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                                            ${tarefa.prioridade}
+                                                        </button>
+                                                        <ul class="dropdown-menu">
+                                                            <li><a class="dropdown-item" href="#">Alta</a></li>
+                                                            <li><a class="dropdown-item" href="#">Media</a></li>
+                                                            <li><a class="dropdown-item" href="#">Baixa</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="atualizar_tarefa(${index})">Salvar</button>
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>`;
 
             div_lista.innerHTML += li_elem;
         });
