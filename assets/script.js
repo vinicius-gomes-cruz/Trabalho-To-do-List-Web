@@ -1,4 +1,4 @@
-// fazer referencias aos elementos HTML
+// Referenciar os elementos HTML
 const input_nome = document.getElementById("nome-tarefa");
 const btn_prioridade = document.getElementById("alterar-prioridade");
 const items_dropdown = document.querySelectorAll(".dropdown-item");
@@ -6,32 +6,32 @@ const div_lista = document.getElementById("list");
 const btn_adicionar = document.getElementById("btn-adicionar");
 const input_pesquisar = document.getElementById("pesquisar");
 
-// adicionar eventos aos elementos
+// Configurar eventos de clique e input
 btn_adicionar.addEventListener("click", adicionarTarefa);
 input_pesquisar.addEventListener("input", pesquisarTarefas);
 
-// alterar o prioridade e exibir
+// Atualizar o botão de prioridade ao clicar nos itens do dropdown
 items_dropdown.forEach(item => {
     item.addEventListener("click", () => {
         btn_prioridade.textContent = item.textContent;
     });
 });
 
-// buscar lista ou inicializar uma nova
+// Recuperar a lista de tarefas ou inicializar uma nova
 let lista_tarefas = JSON.parse(localStorage.getItem("lista_tarefas")) || [];
 
-// exibir lista
+// Exibir a lista de tarefas
 exibirTarefas(lista_tarefas);
 
-// criar modal
+// Função para criar um modal
 function criarModal(id, tipo, titulo, conteudo, botoes) {
-
     const modalId = `${tipo}-${id}`;
 
-    // Verifica se um modal com o mesmo ID já existe no DOM
+    // Verificar se o modal já existe e removê-lo
     const existingModal = document.getElementById(modalId);
-    if (existingModal) existingModal.remove(); // Remove para evitar duplicação
+    if (existingModal) existingModal.remove();
 
+    // Criar o modal
     const modal = document.createElement("div");
     modal.className = "modal fade";
     modal.id = modalId;
@@ -54,19 +54,18 @@ function criarModal(id, tipo, titulo, conteudo, botoes) {
             </div>
         </div>
     `;
-
     document.body.appendChild(modal);
 
     return modal;
 }
 
-// abrir modal
+// Função para abrir um modal
 function abrirModal(modal) {
     const bootstrapModal = new bootstrap.Modal(modal);
     bootstrapModal.show();
 }
 
-// adicionar uma nova tarefa
+// Função para adicionar uma nova tarefa
 function adicionarTarefa(e) {
     e.preventDefault();
 
@@ -74,7 +73,7 @@ function adicionarTarefa(e) {
     const prioridade = btn_prioridade.textContent.trim();
     const tarefa = { nome, prioridade };
 
-    // verifica se o usuário preencheu o nome
+    // Verificar se o nome da tarefa está vazio
     if (!nome) {
         const modal = criarModal(
             0,
@@ -87,7 +86,7 @@ function adicionarTarefa(e) {
         return;
     }
 
-    // verifica se já existe
+    // Verificar se a tarefa já existe
     if (lista_tarefas.some(t => t.nome.toLowerCase() == nome.toLowerCase())) {
         const modal = criarModal(
             0,
@@ -100,20 +99,22 @@ function adicionarTarefa(e) {
         return;
     }
 
-    // adiciona a tarefa na lista e salva no local storage
+    // Adicionar a tarefa à lista e salvar
     lista_tarefas.push(tarefa);
     salvarLista();
+
+    // Limpar o campo e exibir a lista
     input_nome.value = "";
     btn_prioridade.textContent = "Alta";
     exibirTarefas(lista_tarefas);
 }
 
-// salvar lista no local storage
+// Função para salvar a lista de tarefas no localStorage
 function salvarLista() {
     localStorage.setItem("lista_tarefas", JSON.stringify(lista_tarefas));
 }
 
-// editar tarefa
+// Função para editar uma tarefa
 function editarTarefa(id) {
     const nome = document.querySelector(`#nome-edit-${id}`).value;
     if (nome) {
@@ -133,14 +134,14 @@ function editarTarefa(id) {
     }
 }
 
-// concluir/excluir uma tarefa
+// Função para excluir uma tarefa
 function retirarTarefaDaLista(id) {
     lista_tarefas.splice(id, 1);
     salvarLista();
     exibirTarefas(lista_tarefas);
 }
 
-// pesquisar tarefa
+// Função para pesquisar tarefas
 function pesquisarTarefas(e) {
     const nome = e.target.value;
     const tarefas_filtradas = lista_tarefas.filter(t => t.nome.toLowerCase().includes(nome.toLowerCase()));
@@ -148,7 +149,7 @@ function pesquisarTarefas(e) {
     exibirTarefas(tarefas_filtradas);
 }
 
-// exibir lista de tarefas
+// Função para exibir a lista de tarefas
 function exibirTarefas(lista) {
     div_lista.innerHTML = "";
 
@@ -156,12 +157,13 @@ function exibirTarefas(lista) {
         div_lista.innerHTML = "<h3 class='text-center text-light'>Nenhuma tarefa cadastrada.</h3>";
     } else {
         lista.forEach((tarefa, index) => {
+            // Criar modais para editar, excluir e concluir a tarefa
             const modal_editar = criarModal(
                 index,
                 "edit",
                 "Editar Tarefa",
                 `<form class="d-flex">
-                    <input type="text" class="form-control" placeholder="Nome da Tarefa" aria-describedby="basic-addon1" value="${tarefa.nome}" id="nome-edit-${index}">
+                    <input type="text" class="form-control" placeholder="Nome da Tarefa" value="${tarefa.nome}" id="nome-edit-${index}">
                     <div class="dropdown ms-4">
                         <button id="prioridade-edit-${index}" class="btn btn-success dropdown-toggle" type="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
@@ -196,31 +198,32 @@ function exibirTarefas(lista) {
                 <button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="retirarTarefaDaLista(${index})">Concluir</button>`
             );
 
+            // Criar o elemento da tarefa com os botões de ação
             const li_elem = document.createElement('li');
             li_elem.className = 'list-group-item bg-transparent border-0 d-flex align-items-center justify-content-between';
             li_elem.innerHTML = `
-                    <h3 class="text-light fs-4">${tarefa.nome} - ${tarefa.prioridade}</h3>
-                    <div class="d-flex align-items-center gap-2 p-2">
-                
+                <h3 class="text-light fs-4">${tarefa.nome} - ${tarefa.prioridade}</h3>
+                <div class="d-flex align-items-center gap-2 p-2">
                     <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#edit-${index}">
                         <i data-feather="edit" class="mb-1"></i> Editar
                     </button>
-
                     <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#excluir-${index}">
                         <i data-feather="x-circle" class="mb-1"></i> Excluir
                     </button>
-
                     <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#concluir-${index}">
                         <i data-feather="check-square" class="mb-1"></i> Concluir
                     </button>
+                </div>
             `;
 
+            // Adicionar os modais à lista
             li_elem.appendChild(modal_editar);
             li_elem.appendChild(modal_excluir);
             li_elem.appendChild(modal_concluir);
             div_lista.appendChild(li_elem);
         });
 
+        // Atualizar os ícones
         feather.replace();
     }
 }
