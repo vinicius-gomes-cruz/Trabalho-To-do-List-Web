@@ -134,6 +134,11 @@ function editarTarefa(id) {
     }
 }
 
+// Função para atualizar a prioridade de uma tarefa
+function atualizarPrioridade(id, prior) {
+    document.querySelector(`#prioridade-edit-${id}`).textContent = prior;
+}
+
 // Função para excluir uma tarefa
 function retirarTarefaDaLista(id) {
     lista_tarefas.splice(id, 1);
@@ -170,9 +175,9 @@ function exibirTarefas(lista) {
                             ${tarefa.prioridade}
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Alta</a></li>
-                            <li><a class="dropdown-item" href="#">Média</a></li>
-                            <li><a class="dropdown-item" href="#">Baixa</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="atualizarPrioridade(${index}, 'Alta')">Alta</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="atualizarPrioridade(${index}, 'Média')">Média</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="atualizarPrioridade(${index}, 'Baixa')">Baixa</a></li>
                         </ul>
                     </div>
                 </form>`,
