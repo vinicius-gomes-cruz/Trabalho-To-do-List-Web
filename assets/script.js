@@ -134,6 +134,11 @@ function editarTarefa(id) {
     }
 }
 
+// função para carregar o nome do input de edição
+function carregarNomeProInputEditar(id) {
+    document.querySelector(`#nome-edit-${id}`).value = lista_tarefas[id].nome;
+}
+
 // função para atualizar a prioridade de uma tarefa
 function atualizarPrioridade(id, prior) {
     document.querySelector(`#prioridade-edit-${id}`).textContent = prior;
@@ -209,7 +214,7 @@ function exibirTarefas(lista) {
             li_elem.innerHTML = `
                 <h3 class="text-light fs-4">${tarefa.nome} - ${tarefa.prioridade}</h3>
                 <div class="d-flex align-items-center gap-2 p-2">
-                    <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#edit-${index}">
+                    <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#edit-${index}" onclick="carregarNomeProInputEditar(${index})">
                         <i data-feather="edit" class="mb-1"></i> Editar
                     </button>
                     <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#excluir-${index}">
