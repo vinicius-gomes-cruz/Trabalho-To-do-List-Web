@@ -1,4 +1,4 @@
-// Referenciar os elementos HTML
+// criar referências aos elementos HTML
 const input_nome = document.getElementById("nome-tarefa");
 const btn_prioridade = document.getElementById("alterar-prioridade");
 const items_dropdown = document.querySelectorAll(".dropdown-item");
@@ -6,32 +6,32 @@ const div_lista = document.getElementById("list");
 const btn_adicionar = document.getElementById("btn-adicionar");
 const input_pesquisar = document.getElementById("pesquisar");
 
-// Configurar eventos de clique e input
+// configurar os eventos de clique e input
 btn_adicionar.addEventListener("click", adicionarTarefa);
 input_pesquisar.addEventListener("input", pesquisarTarefas);
 
-// Atualizar o botão de prioridade ao clicar nos itens do dropdown
+// atualizar o botão de prioridade ao clicar nos itens do dropdown
 items_dropdown.forEach(item => {
     item.addEventListener("click", () => {
         btn_prioridade.textContent = item.textContent;
     });
 });
 
-// Recuperar a lista de tarefas ou inicializar uma nova
+// recuperar a lista de tarefas ou inicializar uma nova
 let lista_tarefas = JSON.parse(localStorage.getItem("lista_tarefas")) || [];
 
-// Exibir a lista de tarefas
+// exibir a lista de tarefas
 exibirTarefas(lista_tarefas);
 
-// Função para criar um modal
+// função para criar um modal
 function criarModal(id, tipo, titulo, conteudo, botoes) {
     const modalId = `${tipo}-${id}`;
 
-    // Verificar se o modal já existe e removê-lo
+    // verificar se o modal já existe e removê-lo
     const existingModal = document.getElementById(modalId);
     if (existingModal) existingModal.remove();
 
-    // Criar o modal
+    // criar o modal
     const modal = document.createElement("div");
     modal.className = "modal fade";
     modal.id = modalId;
@@ -59,13 +59,13 @@ function criarModal(id, tipo, titulo, conteudo, botoes) {
     return modal;
 }
 
-// Função para abrir um modal
+// função para abrir um modal
 function abrirModal(modal) {
     const bootstrapModal = new bootstrap.Modal(modal);
     bootstrapModal.show();
 }
 
-// Função para adicionar uma nova tarefa
+// função para adicionar uma nova tarefa
 function adicionarTarefa(e) {
     e.preventDefault();
 
@@ -73,7 +73,7 @@ function adicionarTarefa(e) {
     const prioridade = btn_prioridade.textContent.trim();
     const tarefa = { nome, prioridade };
 
-    // Verificar se o nome da tarefa está vazio
+    // verificar se o nome da tarefa está vazio
     if (!nome) {
         const modal = criarModal(
             0,
@@ -86,7 +86,7 @@ function adicionarTarefa(e) {
         return;
     }
 
-    // Verificar se a tarefa já existe
+    // verificar se a tarefa já existe
     if (lista_tarefas.some(t => t.nome.toLowerCase() == nome.toLowerCase())) {
         const modal = criarModal(
             0,
@@ -99,22 +99,22 @@ function adicionarTarefa(e) {
         return;
     }
 
-    // Adicionar a tarefa à lista e salvar
+    // adicionar a tarefa à lista e salvar
     lista_tarefas.push(tarefa);
     salvarLista();
 
-    // Limpar o campo e exibir a lista
+    // limpar o campo e exibir a lista
     input_nome.value = "";
     btn_prioridade.textContent = "Alta";
     exibirTarefas(lista_tarefas);
 }
 
-// Função para salvar a lista de tarefas no localStorage
+// função para salvar a lista de tarefas no localStorage
 function salvarLista() {
     localStorage.setItem("lista_tarefas", JSON.stringify(lista_tarefas));
 }
 
-// Função para editar uma tarefa
+// função para editar uma tarefa
 function editarTarefa(id) {
     const nome = document.querySelector(`#nome-edit-${id}`).value;
     if (nome) {
@@ -134,19 +134,19 @@ function editarTarefa(id) {
     }
 }
 
-// Função para atualizar a prioridade de uma tarefa
+// função para atualizar a prioridade de uma tarefa
 function atualizarPrioridade(id, prior) {
     document.querySelector(`#prioridade-edit-${id}`).textContent = prior;
 }
 
-// Função para excluir uma tarefa
+// função para excluir uma tarefa
 function retirarTarefaDaLista(id) {
     lista_tarefas.splice(id, 1);
     salvarLista();
     exibirTarefas(lista_tarefas);
 }
 
-// Função para pesquisar tarefas
+// função para pesquisar tarefas
 function pesquisarTarefas(e) {
     const nome = e.target.value;
     const tarefas_filtradas = lista_tarefas.filter(t => t.nome.toLowerCase().includes(nome.toLowerCase()));
@@ -154,7 +154,7 @@ function pesquisarTarefas(e) {
     exibirTarefas(tarefas_filtradas);
 }
 
-// Função para exibir a lista de tarefas
+// função para exibir a lista de tarefas
 function exibirTarefas(lista) {
     div_lista.innerHTML = "";
 
@@ -162,7 +162,7 @@ function exibirTarefas(lista) {
         div_lista.innerHTML = "<h3 class='text-center text-light'>Nenhuma tarefa cadastrada.</h3>";
     } else {
         lista.forEach((tarefa, index) => {
-            // Criar modais para editar, excluir e concluir a tarefa
+            // criar modais para editar, excluir e concluir a tarefa
             const modal_editar = criarModal(
                 index,
                 "edit",
@@ -203,7 +203,7 @@ function exibirTarefas(lista) {
                 <button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="retirarTarefaDaLista(${index})">Concluir</button>`
             );
 
-            // Criar o elemento da tarefa com os botões de ação
+            // criar o elemento da tarefa com os botões de ação
             const li_elem = document.createElement('li');
             li_elem.className = 'list-group-item bg-transparent border-0 d-flex align-items-center justify-content-between';
             li_elem.innerHTML = `
@@ -221,14 +221,14 @@ function exibirTarefas(lista) {
                 </div>
             `;
 
-            // Adicionar os modais à lista
+            // adicionar os modais à lista
             li_elem.appendChild(modal_editar);
             li_elem.appendChild(modal_excluir);
             li_elem.appendChild(modal_concluir);
             div_lista.appendChild(li_elem);
         });
 
-        // Atualizar os ícones
+        // atualizar os ícones
         feather.replace();
     }
 }
