@@ -1,13 +1,6 @@
-
-  
-
 # To-Do List IFPR
 
-  
-
 Aplicativo simples de To-Do List para gerenciar tarefas, com salvamento local no navegador via LocalStorage. Desenvolvido com HTML, CSS, JavaScript e Bootstrap.
-
-  
 
 ## Funcionalidades  
 
@@ -16,8 +9,6 @@ Aplicativo simples de To-Do List para gerenciar tarefas, com salvamento local no
 -  **Excluir tarefa**: Remova uma tarefa da lista.
 -  **Pesquisar**: Filtre tarefas pelo nome.
 -  **Armazenamento Local**: As tarefas são salvas no navegador e mantidas após recarregar a página.
-
-  
 
 ## Estrutura do Projeto
 
