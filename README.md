@@ -33,4 +33,4 @@ Aplicativo simples de To-Do List para gerenciar tarefas, com salvamento local no
 
 ## Autores
 
-Feito por Vinícius Gomes e Henrique Palermo.
+Vinícius Gomes e Henrique Palermo.
