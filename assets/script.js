@@ -25,16 +25,16 @@ exibirTarefas(lista_tarefas);
 
 // função para criar um modal
 function criarModal(id, tipo, titulo, conteudo, botoes) {
-    const modalId = `${tipo}-${id}`;
+    const modal_id = `${tipo}-${id}`;
 
     // verificar se o modal já existe e removê-lo
-    const existingModal = document.getElementById(modalId);
-    if (existingModal) existingModal.remove();
+    const existe_este_modal = document.getElementById(modal_id);
+    if (existe_este_modal) existe_este_modal.remove();
 
     // criar o modal
     const modal = document.createElement("div");
     modal.className = "modal fade";
-    modal.id = modalId;
+    modal.id = modal_id;
     modal.tabIndex = "-1";
     modal.setAttribute("aria-labelledby", "exampleModalLabel");
     modal.setAttribute("aria-hidden", "true");
