@@ -45,7 +45,7 @@ function criarModal(id, tipo, titulo, conteudo, botoes) {
                     <h5 class="modal-title text-center">${titulo}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body text-light">
                     ${conteudo}
                 </div>
                 <div class="modal-footer">
