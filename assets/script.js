@@ -214,7 +214,7 @@ function exibirTarefas(lista) {
             li_elem.innerHTML = `
                 <h3 class="text-light fs-4">${tarefa.nome} - ${tarefa.prioridade}</h3>
                 <div class="d-flex align-items-center gap-2 p-2">
-                    <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#edit-${index}" onclick="carregarNomeProInputEditar(${index})">
+                    <button id="btnEdit" type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#edit-${index}" onclick="carregarNomeProInputEditar(${index})">
                         <i data-feather="edit" class="mb-1"></i> Editar
                     </button>
                     <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#excluir-${index}">

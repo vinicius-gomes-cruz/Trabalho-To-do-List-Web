@@ -35,6 +35,15 @@ main {
     width: 60vw !important;
 }
 
+#btnEdit:hover {
+    background: rgb(158, 130, 4);
+    border-color: rgb(158, 130, 4);
+}
+
+button {
+    border-radius: 15px !important;
+}
+
 #list {
     height: 30vh;
     overflow-y: auto;
