@@ -19,6 +19,25 @@ header {
 #img-if {
     height: calc(25vh - 40px);
 }
+.modal-content {
+    border-radius: 30px;
+    border-style: solid;
+    border-color: black;
+    border-width: 3px;
+}
+
+.modal-header {
+    background: black;
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+    color: white;
+    
+}
+
+.modal-content {
+    opacity: calc(90%);
+    background: linear-gradient(270deg, rgb(6, 190, 89), rgb(4, 92, 23));
+}
 
 main {
     background: linear-gradient(270deg, rgb(6, 190, 89), rgb(4, 92, 23));
@@ -33,6 +52,7 @@ main {
     border-radius: 10px;
     background:rgba(39, 39, 39, 0.767);
     width: 60vw !important;
+    border-width: 6px;
 }
 
 #btnEdit:hover {
