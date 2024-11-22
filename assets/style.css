@@ -21,7 +21,7 @@ header {
 }
 
 main {
-    background-color: rgb(8, 134, 25);
+    background: linear-gradient(270deg, rgb(6, 190, 89), rgb(4, 92, 23));
     flex: 1;
     display: flex;
     justify-content: center;
