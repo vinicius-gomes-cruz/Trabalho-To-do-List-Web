@@ -55,7 +55,7 @@ main {
     border-width: 6px;
 }
 
-#btnEdit:hover {
+#btn-edit:hover {
     background: rgb(158, 130, 4);
     border-color: rgb(158, 130, 4);
 }
