@@ -134,7 +134,7 @@ function editarTarefa(id) {
     }
 }
 
-// função para carregar o nome do input de edição
+// função para carregar o nome de uma tarefa para o input de edição
 function carregarNomeProInputEditar(id) {
     document.querySelector(`#nome-edit-${id}`).value = lista_tarefas[id].nome;
 }
@@ -226,10 +226,12 @@ function exibirTarefas(lista) {
                 </div>
             `;
 
-            // adicionar os modais à lista
+            // adicionar os modais ao elemento da tarefa
             li_elem.appendChild(modal_editar);
             li_elem.appendChild(modal_excluir);
             li_elem.appendChild(modal_concluir);
+
+            // adicionar o elemento da tarefa à lista
             div_lista.appendChild(li_elem);
         });
 
