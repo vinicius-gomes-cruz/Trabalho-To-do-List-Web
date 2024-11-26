@@ -211,8 +211,12 @@ function exibirTarefas(lista) {
             // criar o elemento da tarefa com os botões de ação
             const li_elem = document.createElement('li');
             li_elem.className = 'list-group-item bg-transparent border-0 d-flex align-items-center justify-content-between';
+            let prior = "";
+            if (tarefa.prioridade == "Alta") prior = "danger";
+            else if (tarefa.prioridade == "Média") prior = "warning";
+            else prior = "success";
             li_elem.innerHTML = `
-                <h3 class="text-light fs-4">${tarefa.nome} - ${tarefa.prioridade}</h3>
+                <h3 class="text-light fs-4">${tarefa.nome} - <span class="badge bg-${prior}">${tarefa.prioridade}</span></h3>
                 <div class="d-flex align-items-center gap-2 p-2">
                     <button id="btn-edit" type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#edit-${index}" onclick="carregarNomeProInputEditar(${index})">
                         <i data-feather="edit" class="mb-1"></i> Editar
