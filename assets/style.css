@@ -27,7 +27,7 @@ header {
 }
 
 .modal-header {
-    background: black;
+    background: rgb(3, 6, 37);
     border-top-left-radius: 25px;
     border-top-right-radius: 25px;
     color: white;
