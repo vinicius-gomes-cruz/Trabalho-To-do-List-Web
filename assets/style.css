@@ -35,7 +35,6 @@ header {
 }
 
 .modal-content {
-    opacity: calc(90%);
     background: linear-gradient(270deg, rgb(6, 190, 89), rgb(4, 92, 23));
 }
 
